@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>약관</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <script>
+        document.addEventListener('DOMContentLoaded', function (){
+            const btnNext = document.getElementsByClassName('btnNext')[0];
+            const check1 = document.getElementsByTagName('input')[0];
+            const check2 = document.getElementsByTagName('input')[1];
+
+            btnNext.onclick = function(e){
+                if(check1.checked && check2.checked){
+                    return true;
+                }else{
+                    alert('약관을 읽고 동의해주세요.');
+                    return false;
+                }
+            }
+        })
+
+    </script>
+</head>
+<body>
+<div id="wrapper">
+    <th:block th:include="/user/_header.html"/>
+        <main id="user">
+            <section class="terms">
+                <h2 class="tit">사이트 이용약관</h2>
+                <table border="1">                    
+                    <tr>
+                        <td>
+                            <textarea name="terms">[[${termsDTO.terms}]]</textarea>
+                            <label><input type="checkbox" class="terms">&nbsp;동의합니다.</label>
+                        </td>
+                    </tr>
+                </table>
+
+                <h2 class="tit">개인정보 취급방침</h2>
+                <table border="1">                    
+                    <tr>
+                        <td>
+                            <textarea name="privacy">[[${termsDTO.privacy}]]</textarea>
+                            <label><input type="checkbox" class="privacy">&nbsp;동의합니다.</label>
+                        </td>
+                    </tr>
+                </table>
+                
+                <div>
+                    <a th:href="@{/user/login}" class="btn btnCancel">취소</a>
+                    <a th:href="@{/user/register}" class="btn btnNext">다음</a>
+                </div>
+
+            </section>
+        </main>
+        <th:block th:include="/user/_footer.html"/>
+    </div>    
+</body>
+</html>
