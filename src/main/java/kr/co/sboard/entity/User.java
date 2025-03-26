@@ -1,7 +1,6 @@
 package kr.co.sboard.entity;
 
 import jakarta.persistence.*;
-import kr.co.sboard.dto.UserDTO;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 

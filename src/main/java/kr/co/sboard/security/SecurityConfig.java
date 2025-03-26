@@ -35,7 +35,7 @@ public class SecurityConfig {
             인가 설정
                 - MyUserDetails 권한 목록 생성하는 메서드(getAuthorities)에서
                 접두어로 ROLE_ 입력해야 hasRole, hasAnyRole 권한처리가 가능함
-                - Sprint Security 는 기본적으로 존재하지 않는 요청 주소에 대해 login 페이지로 redirec 시킴
+                - Sprint Security 는 기본적으로 존재하지 않는 요청 주소에 대해 login 페이지로 redirect 시킴
         */
 
 
@@ -43,12 +43,11 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/")
                 .permitAll()  // -> 로그인 하던 하지 않던 index("/") 에 접근 할 수 있다!
-                .requestMatchers("/admin/**")
-                .hasRole("ADMIN")
-                .requestMatchers("/manager/**")
-                .hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers("/staff/**")
-                .hasAnyRole("ADMIN","MANAGER", "STAFF")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/manager/**").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers("/staff/**").hasAnyRole("ADMIN","MANAGER", "STAFF")
+                .requestMatchers("/article/**").authenticated()
+                .requestMatchers("/user/**").permitAll()
                 .anyRequest()
                 .permitAll());
 

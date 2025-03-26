@@ -16,6 +16,12 @@ server:
     servlet:
         context-path: /
 spring:
+
+    servlet:
+      multipart:
+          location: uploads
+          max-file-size: 10MB
+
     mail:
         host: smtp.gmail.com
         port: 587
@@ -42,7 +48,7 @@ spring:
     jpa:
         database: mysql
         hibernate:
-            ddl-auto: update
+            ddl-auto: none
             naming:
                 physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         properties:
