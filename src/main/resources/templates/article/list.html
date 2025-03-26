@@ -34,21 +34,27 @@
                         <th>날짜</th>
                         <th>조회</th>
                     </tr>                    
-                    <tr>
-                        <td>1</td>
-                        <td><a th:href="@{/article/view}">테스트 제목입니다.[3]</a></td>
-                        <td>길동이</td>
-                        <td>20-05-12</td>
-                        <td>12</td>
+                    <tr th:each="article, i:${pageResponseDTO.dtoList}">
+                        <td>[[${pageResponseDTO.startNo - i.index}]]</td>
+                        <td><a th:href="@{/article/view}">[[${article.title}]]&#91;[[${article.comment}]]&#93;</a></td>
+                        <td>[[${article.nick}]]</td>
+                        <td>[[${article.wdate}]]</td>
+                        <td>[[${article.hit}]]</td>
                     </tr>
                 </table>
 
                 <div class="page">
-                    <a href="#" class="prev">이전</a>
-                    <a href="#" class="num current">1</a>
-                    <a href="#" class="num">2</a>
-                    <a href="#" class="num">3</a>
-                    <a href="#" class="next">다음</a>
+                    <th:block th:if="${pageResponseDTO.prev}">
+                        <a th:href="@{/article/list(pg=${pageResponseDTO.start-1})}" class="prev">이전</a>
+                    </th:block>
+
+                    <th:block th:each="num:${#numbers.sequence(pageResponseDTO.start, pageResponseDTO.end)}">
+                        <a th:href="@{/article/list(pg=${num})}" th:class="${num == pageResponseDTO.pg} ? 'current' : 'num'">[[${num}]]</a>
+                    </th:block>
+
+                    <th:block th:if="${pageResponseDTO.next}">
+                        <a th:href="@{/article/list(pg=${pageResponseDTO.end+1})}" class="next">다음</a>
+                    </th:block>
                 </div>
 
                 <a th:href="@{/article/write}" class="btn btnWrite">글쓰기</a>

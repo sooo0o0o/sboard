@@ -31,6 +31,7 @@ public class Article {
     @CreationTimestamp
     private LocalDateTime wdate;
 
+
     @PrePersist
     public void prePersist(){
         //엔티티 기본 속성 값 초기화

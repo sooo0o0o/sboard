@@ -3,12 +3,15 @@ package kr.co.sboard.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import kr.co.sboard.dto.ArticleDTO;
 import kr.co.sboard.dto.FileDTO;
+import kr.co.sboard.dto.PageRequestDTO;
+import kr.co.sboard.dto.PageResponseDTO;
 import kr.co.sboard.service.ArticleService;
 import kr.co.sboard.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -22,8 +25,19 @@ public class ArticleController {
     private final ArticleService articleService;
     private final FileService fileService;
 
+    //Controller 에서 pageable 객체가 처음 생성됨!
     @GetMapping("/article/list")
-    public String list(){
+    public String list(Model model, PageRequestDTO pageRequestDTO) {
+
+        //전체 글 조회 서비스 호출(JPA)
+        PageResponseDTO pageResponseDTO = articleService.findAll(pageRequestDTO);
+
+        //전체 글 조회 서비스 호출(MyBatis)
+
+
+        model.addAttribute("articles", pageResponseDTO.getDtoList());
+        model.addAttribute("pageResponseDTO", pageResponseDTO);
+
         return "/article/list";
     }
 

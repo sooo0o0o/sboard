@@ -26,6 +26,14 @@ public class ArticleDTO {
     private String regip;
     private String wdate;
 
+    public String getWdate(){
+        return wdate.substring(0,10);   // yyyy-mm-dd
+    }
+
+    //추가필드
+    private String nick;
+
+
     //form 에서 입력하는 file -> 첨부파일 객체
     private MultipartFile file1;
     private MultipartFile file2;
