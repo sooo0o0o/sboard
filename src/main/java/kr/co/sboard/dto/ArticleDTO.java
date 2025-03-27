@@ -1,5 +1,6 @@
 package kr.co.sboard.dto;
 
+import kr.co.sboard.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,6 +33,9 @@ public class ArticleDTO {
 
     //추가필드
     private String nick;
+
+    private UserDTO user;
+    private List<FileDTO> files;
 
 
     //form 에서 입력하는 file -> 첨부파일 객체

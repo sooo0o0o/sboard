@@ -15,22 +15,52 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
+/*
+@Component 가 하는 역할
+    @Autowired
+    public ArticleService(ArticleRepository repository){
+    ....}
+*/
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class ArticleService {
 
-    /*
-    @Component 가 하는 역할
-        @Autowired
-        public ArticleService(ArticleRepository repository){
-        ....}
-    */
-
     private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
     private final ModelMapper modelMapper;
+
+    public PageResponseDTO searchAll(PageRequestDTO pageRequestDTO) {
+
+        //페이징 처리를 위한 pageable 객체 생성
+        Pageable pageable = pageRequestDTO.getPageable("no");
+
+        Page<Tuple> pageArticle = articleRepository.selectAllForSearch(pageRequestDTO, pageable);
+        log.info("pageArticle: {}", pageArticle);
+
+        //Article Entity 리스트를 ArticleDTO 리스트로 변환
+        List<ArticleDTO> articleDTOList = pageArticle.getContent().stream().map(tuple -> {
+            Article article = tuple.get(0, Article.class);
+            String nick = tuple.get(1, String.class);
+
+            ArticleDTO articleDTO = modelMapper.map(article, ArticleDTO.class);
+            articleDTO.setNick(nick);
+
+            return articleDTO;
+
+        }).toList();
+
+        int total = (int) pageArticle.getTotalElements();   //전체 게시물 갯수
+
+        return PageResponseDTO
+                .builder()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(articleDTOList)
+                .total(total)
+                .build();
+    }
 
     public PageResponseDTO findAll(PageRequestDTO pageRequestDTO) {
 
@@ -62,6 +92,19 @@ public class ArticleService {
                 .build();
     }
 
+    public ArticleDTO findById(int no) {
+        Optional<Article> optArticle = articleRepository.findById(no);
+        if (optArticle.isPresent()) {
+            Article article = optArticle.get();
+
+            ArticleDTO articleDTO = modelMapper.map(article, ArticleDTO.class);
+
+            return articleDTO;
+        }
+
+        return null;
+    }
+
     public int register(ArticleDTO articleDTO) {
 
         //엔티티 변환
@@ -84,4 +127,5 @@ public class ArticleService {
 
 
     }
+
 }

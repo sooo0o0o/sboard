@@ -22,6 +22,10 @@ public class PageResponseDTO {
     private int start, end;
     private boolean prev, next;
 
+    //search
+    private String searchType;
+    private String keyword;
+
     @Builder
     public PageResponseDTO(PageRequestDTO pageRequestDTO, List<ArticleDTO> dtoList, int total) {
         this.cate = pageRequestDTO.getCate();
@@ -29,6 +33,10 @@ public class PageResponseDTO {
         this.size = pageRequestDTO.getSize();
         this.total = total;
         this.dtoList = dtoList;
+
+        //search
+        this.searchType = pageRequestDTO.getSearchType();
+        this.keyword = pageRequestDTO.getKeyword();
 
         this.startNo = total - ((pg - 1) * size);
         this.end = (int) (Math.ceil(this.pg / 10.0)) * 10;

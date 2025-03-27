@@ -24,7 +24,7 @@ public class PageRequestDTO {
     @Builder.Default    //기본값 초기화
     private int size = 10;
 
-    private String type;
+    private String searchType;
     private String keyword;
     private String cate;
 

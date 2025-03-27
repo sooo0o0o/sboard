@@ -9,7 +9,6 @@ import kr.co.sboard.service.ArticleService;
 import kr.co.sboard.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +23,19 @@ public class ArticleController {
 
     private final ArticleService articleService;
     private final FileService fileService;
+
+    @GetMapping("/article/search")
+    public String search(PageRequestDTO pageRequestDTO, Model model) {
+        log.info("pageRequestDTO:{}", pageRequestDTO);
+
+        //서비스 호출
+        PageResponseDTO pageResponseDTO = articleService.searchAll(pageRequestDTO);
+
+        model.addAttribute("pageResponseDTO", pageResponseDTO);
+
+        return "/article/searchList";
+    }
+
 
     //Controller 에서 pageable 객체가 처음 생성됨!
     @GetMapping("/article/list")
@@ -47,7 +59,12 @@ public class ArticleController {
     }
 
     @GetMapping("/article/view")
-    public String view(){
+    public String view(Integer no, Model model){
+        //글 조회 서비스 호출
+        ArticleDTO articleDTO = articleService.findById(no);
+
+        model.addAttribute(articleDTO); //따로 "이름" 을 지정하지않으면 Type 이름(맨 앞에 소문자)
+
         return "/article/view";
     }
 
