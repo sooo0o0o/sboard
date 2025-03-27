@@ -98,16 +98,24 @@ public class FileService {
 
 
     public ResponseEntity downloadFile(int fno){
+
         Optional<File> optFile = fileRepository.findById(fno);
 
         File file = null;
         if(optFile.isPresent()) {
             file = optFile.get();
+
+            int count = file.getDownload();
+            file.setDownload(count + 1);
+            fileRepository.save(file);
         }
 
         //파일 다운로드 스트림 작업
         try{
+            //파일 패스 정보객체 생성
             Path path = Paths.get(uploadDir + java.io.File.separator + file.getSName());
+
+            //파일 컨텐츠 타입 확인
             String contentType = Files.probeContentType(path);
 
             HttpHeaders headers = new HttpHeaders();

@@ -28,7 +28,11 @@ public class ArticleDTO {
     private String wdate;
 
     public String getWdate(){
-        return wdate.substring(0,10);   // yyyy-mm-dd
+        if(wdate != null){
+            return wdate.substring(0,10);   // yyyy-mm-dd
+
+        }
+        return null;
     }
 
     //추가필드

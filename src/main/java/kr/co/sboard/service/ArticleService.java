@@ -6,13 +6,16 @@ import kr.co.sboard.dto.ArticleDTO;
 import kr.co.sboard.dto.PageRequestDTO;
 import kr.co.sboard.dto.PageResponseDTO;
 import kr.co.sboard.entity.Article;
+import kr.co.sboard.entity.User;
 import kr.co.sboard.repository.ArticleRepository;
+import kr.co.sboard.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +34,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticleMapper articleMapper;
     private final ModelMapper modelMapper;
+    private final FileRepository fileRepository;
 
     public PageResponseDTO searchAll(PageRequestDTO pageRequestDTO) {
 
@@ -108,24 +112,54 @@ public class ArticleService {
     public int register(ArticleDTO articleDTO) {
 
         //엔티티 변환
+        User user = User.builder()
+                .uid(articleDTO.getWriter())
+                .build();
+
         Article article = modelMapper.map(articleDTO, Article.class);
+        article.setUser(user);
+
         log.info("article : {}", article);
 
         //MyBatis 저장
-        articleMapper.insertArticle(articleDTO);
+        //articleMapper.insertArticle(articleDTO);
 
         //매개변수로 전달되는 articleDTO 의 no 속성에 mybatis 가 insert 한 데이터의 pk 값을 반환
-        int no = articleDTO.getNo();
+        //int no = articleDTO.getNo();
 
-        return no;
+        //return no;
 
 
         //JPA 저장
-        //Article savedArticle = articleRepository.save(article);
+        Article savedArticle = articleRepository.save(article);
         //저장한 글 번호 반환
-        //return savedArticle.getNo();
+        return savedArticle.getNo();
 
 
     }
+
+    public void modify(ArticleDTO articleDTO) {
+
+        Article article = articleRepository.findById(articleDTO.getNo()).get();
+
+        article.setTitle(articleDTO.getTitle());
+        article.setContent(articleDTO.getContent());
+        log.info("article : {}", article);
+
+
+        articleRepository.save(article);
+
+        System.out.println("데이터베이스에 수정된 값 저장됨: " + article.getTitle());
+
+    }
+
+    @Transactional
+    public void delete(int no) {
+        //FK로 인해 파일을 먼저 삭제하고, 그 후에 Article 을 삭제
+        fileRepository.deleteByAno(no);
+
+        articleRepository.deleteById(no);
+    }
+
 
 }

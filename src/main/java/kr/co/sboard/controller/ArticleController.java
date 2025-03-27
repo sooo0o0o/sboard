@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -54,8 +55,29 @@ public class ArticleController {
     }
 
     @GetMapping("/article/modify")
-    public String modify(){
+    public String modify(@RequestParam("no") Integer no, Model model) {
+        ArticleDTO articleDTO = articleService.findById(no);
+        log.info("articleDTO:{}", articleDTO);
+
+        model.addAttribute("articleDTO", articleDTO);
+
         return "/article/modify";
+    }
+    @PostMapping("/article/modify")
+    public String modify(ArticleDTO articleDTO) {
+        // 전달된 값들이 잘 매핑되었는지 확인
+        System.out.println("수정된 제목: " + articleDTO.getTitle());
+        System.out.println("수정된 내용: " + articleDTO.getContent());
+        System.out.println("수정된 번호: " + articleDTO.getNo());
+
+        // 로그로 데이터 확인
+        log.info("수정된 제목: {}", articleDTO.getTitle());
+        log.info("수정된 내용: {}", articleDTO.getContent());
+        log.info("수정된 번호: {}", articleDTO.getNo());
+
+
+        articleService.modify(articleDTO);
+        return "redirect:/article/view?no="+articleDTO.getNo();
     }
 
     @GetMapping("/article/view")
@@ -100,6 +122,13 @@ public class ArticleController {
     @GetMapping("/article/searchList")
     public String searchList(){
         return "/article/searchList";
+    }
+
+    @GetMapping("/article/delete")
+    public String delete(@RequestParam("no") int no){
+        articleService.delete(no);
+
+        return "redirect:/article/list";
     }
 
 }
